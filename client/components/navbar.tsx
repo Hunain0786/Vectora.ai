@@ -32,6 +32,9 @@ export function Navbar() {
                     <Button variant="ghost" size="sm" onClick={() => router.push("/clean")}>
                         Data Cleaning
                     </Button>
+                    <Button variant="ghost" size="sm" onClick={() => router.push("/chat")}>
+                        Chat
+                    </Button>
                     <Button variant="ghost" size="sm" onClick={() => router.push("/pricing")}>
                         Pricing
                     </Button>
@@ -70,6 +73,9 @@ export function Navbar() {
                                 </Button>
                                 <Button variant="ghost" className="justify-start" onClick={() => router.push("/clean")}>
                                     Data Cleaning
+                                </Button>
+                                <Button variant="ghost" className="justify-start" onClick={() => router.push("/chat")}>
+                                    Chat
                                 </Button>
                                 <Button variant="ghost" className="justify-start" onClick={() => router.push("/pricing")}>
                                     Pricing
