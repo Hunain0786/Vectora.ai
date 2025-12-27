@@ -81,17 +81,13 @@ def clean_text(text):
     if not isinstance(text, str):
         return ""
     import re
-    # Lowercase
     text = text.lower()
-    # Remove special chars but keep spaces
     text = re.sub(r'[^\w\s]', '', text)
-    # Remove extra whitespace
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
 def clean_for_nlp(df):
     report_items = []
-    # Identify explicit text columns (heuristic: object type and mean length > 10)
     for col in df.columns:
         if df[col].dtype == 'object':
             mean_len = df[col].astype(str).map(len).mean()
@@ -103,18 +99,15 @@ def clean_for_nlp(df):
 def advanced_clean_dataframe(df, target_col=None, problem_type="general"):
     report = {}
     
-    # Base Cleaning: Missing Values
     df = clean_missing_values(df)
     report["missing_values"] = "handled"
 
-    # Base Cleaning: Duplicates
     before = len(df)
     df = remove_duplicates(df)
     report["duplicates_removed"] = before - len(df)
     
     report["problem_type_actions"] = []
 
-    # Problem-Specific Cleaning
     if problem_type == "sentiment_analysis":
         df, nlp_report = clean_for_nlp(df)
         report["problem_type_actions"].extend(nlp_report)
@@ -135,8 +128,7 @@ def advanced_clean_dataframe(df, target_col=None, problem_type="general"):
                  report["class_imbalance"] = "not detected"
                  
     elif problem_type == "classification":
-         # For multi-class, we generally just report imbalance rather than auto-fixing 
-         # because simple undersampling can be destructive.
+     
          if target_col:
              val_counts = df[target_col].value_counts(normalize=True).to_dict()
              report["class_distribution"] = val_counts
@@ -155,7 +147,7 @@ def resolve_sales_column(df):
     if not candidates:
         raise ValueError("No suitable sales column found")
 
-    return candidates[0]  # pick best match for v1
+    return candidates[0]
 
 def build_column_schema(df):
     return {

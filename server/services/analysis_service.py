@@ -259,7 +259,6 @@ def explain_data_cleaning(report):
             "and categorical columns with the most frequent category."
         )
 
-    # Duplicates
     duplicates = report.get("duplicates_removed", 0)
     if duplicates > 0:
         lines.append(
@@ -270,7 +269,6 @@ def explain_data_cleaning(report):
             "It looks like there were no duplicate records in the dataset."
         )
 
-    # Class imbalance
     imbalance = report.get("class_imbalance")
 
     if isinstance(imbalance, dict):
@@ -295,13 +293,11 @@ def explain_data_cleaning(report):
             "I didn't detect any significant class imbalance, so I kept the original distribution."
         )
 
-    # Problem-specific actions (NLP)
     if "problem_type_actions" in report and report["problem_type_actions"]:
         lines.append("For Sentiment Analysis prep:")
         for action in report["problem_type_actions"]:
             lines.append(f"- {action}")
 
-    # Class distribution (Multi-class)
     if "class_distribution" in report:
         lines.append("Class Distribution Analysis:")
         dist = report["class_distribution"]

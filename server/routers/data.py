@@ -135,7 +135,6 @@ async def ask_endpoint(request: QueryRequest):
     question = request.question
     print(f"\n[?] Question: {question}")
 
-    # Auto-detect visualization intent
     vis_keywords = ["visualize", "visualise", "visualisation", "plot", "chart", "graph", "histogram", "scatter", "bar", "pie"]
     if any(keyword in question.lower() for keyword in vis_keywords):
         request.visualize = True
@@ -143,7 +142,6 @@ async def ask_endpoint(request: QueryRequest):
 
     schema = build_column_schema(df)
     try:
-        # Run blocking LLM/Pandas calls in threadpool to avoid blocking async event loop
         plan = await run_in_threadpool(llm_build_plan, question, schema)
         print("[!] Plan:", plan)
 
@@ -152,30 +150,26 @@ async def ask_endpoint(request: QueryRequest):
         if result.get("analysis") == "clean" and "new_df" in result:
             state.set_df(result.pop("new_df"))
 
-        # Build standard response structure
-        # Pass the visualize flag directly
+    
         response = build_api_response(result, request.visualize)
       
-        # Rephrasing step removed for speed
+    
         rephrased_answer = response["answer"]
         
-        # Append visualization link if charts exist and were requested
         if request.visualize and "charts" in response:
              rephrased_answer += "\n\nYou can see a visualization of the chart [here](/chat/visualize)."
              
-        # Add download link ONLY for clean operation
         if result.get("analysis") == "clean":
              rephrased_answer += f"\n\n[Download Cleaned Data]({config.API_BASE_URL}/download)"
 
         response["answer"] = rephrased_answer
 
-        # Filter charts based on visualization toggle
+        
         if not request.visualize:
             response.pop("charts", None)
 
         print("[=] Answer:", rephrased_answer)
 
-        # Store chat in MongoDB
         try:
             chat_log = ChatLog(
                 user_id=request.user_id,

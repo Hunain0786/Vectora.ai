@@ -19,12 +19,10 @@ async def register(user: UserRegister):
     try:
         users_collection = db.get_db()["ai.Users"]
         
-        # Check if user already exists
         existing_user = await users_collection.find_one({"email": user.email})
         if existing_user:
             raise HTTPException(status_code=400, detail="Email already registered")
         
-        # Create new user document
         new_user = User(
             email=user.email,
             username=f"{user.first_name} {user.last_name}",
