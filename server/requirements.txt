@@ -1,0 +1,11 @@
+openai
+pandas
+numpy
+scikit-learn
+fastapi
+uvicorn
+python-multipart
+python-dotenv
+motor
+passlib
+bcrypt==3.2.0
